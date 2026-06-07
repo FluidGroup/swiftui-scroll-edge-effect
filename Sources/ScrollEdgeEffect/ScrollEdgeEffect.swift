@@ -217,63 +217,6 @@ public struct ScrollEdgeEffect: View {
   }
 }
 
-/// A scroll view that automatically applies a `ScrollEdgeEffect` mask.
-public struct ScrollEdgeEffectScrollView<Content: View>: View {
-
-  private let axes: Axis.Set
-  private let edges: Edge.Set
-  private let length: CGFloat
-  private let padding: EdgeInsets
-  private let threshold: CGFloat
-  private let animation: Animation?
-  private let showsIndicators: Bool
-  private let content: Content
-
-  /// Creates a scroll view that automatically applies an edge fade mask.
-  ///
-  /// - Parameters:
-  ///   - axes: The scrollable axes.
-  ///   - edges: The edges where fade ramps can appear.
-  ///   - length: The length of each fade ramp.
-  ///   - padding: Fully visible insets before the fade ramps begin.
-  ///   - threshold: The distance from an edge that still counts as being at that edge.
-  ///   - animation: The animation used when edge fades appear or disappear.
-  ///   - showsIndicators: A Boolean value that controls scroll indicator visibility.
-  ///   - content: The scrollable content.
-  public init(
-    _ axes: Axis.Set = .vertical,
-    edges: Edge.Set = [.top, .bottom],
-    length: CGFloat = 40,
-    padding: EdgeInsets = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0),
-    threshold: CGFloat = 1,
-    animation: Animation? = .spring,
-    showsIndicators: Bool = true,
-    @ViewBuilder content: () -> Content
-  ) {
-    self.axes = axes
-    self.edges = edges
-    self.length = length
-    self.padding = padding
-    self.threshold = threshold
-    self.animation = animation
-    self.showsIndicators = showsIndicators
-    self.content = content()
-  }
-
-  public var body: some View {
-    ScrollView(axes, showsIndicators: showsIndicators) {
-      content
-    }
-    .scrollEdgeEffect(
-      edges: edges,
-      length: length,
-      padding: padding,
-      threshold: threshold,
-      animation: animation
-    )
-  }
-}
-
 public extension View {
 
   /// Applies a scroll edge fade mask to the first scrollable view in this view hierarchy.
@@ -334,4 +277,3 @@ private struct ScrollEdgeEffectModifier: ViewModifier {
 }
 
 public typealias EdgeEffectMask = ScrollEdgeEffect
-public typealias EdgeEffectScrollView<Content: View> = ScrollEdgeEffectScrollView<Content>

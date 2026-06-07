@@ -16,7 +16,7 @@ Add the package with Swift Package Manager:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/FluidGroup/swiftui-scroll-edge-effect.git", from: "0.1.0")
+  .package(url: "https://github.com/FluidGroup/swiftui-scroll-edge-effect.git", from: "0.1.1")
 ]
 ```
 
@@ -47,13 +47,14 @@ struct ContentView: View {
 ### ScrollView
 
 ```swift
-ScrollEdgeEffectScrollView(.vertical, edges: [.top, .bottom]) {
+ScrollView {
   LazyVStack {
     ForEach(items) { item in
       ItemRow(item: item)
     }
   }
 }
+.scrollEdgeEffect(edges: [.top, .bottom])
 ```
 
 ### Manual mask
