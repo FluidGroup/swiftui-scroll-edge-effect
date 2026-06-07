@@ -16,7 +16,7 @@ Add the package with Swift Package Manager:
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/FluidGroup/swiftui-scroll-edge-effect.git", from: "0.1.1")
+  .package(url: "https://github.com/FluidGroup/swiftui-scroll-edge-effect.git", from: "0.1.2")
 ]
 ```
 
@@ -37,8 +37,7 @@ struct ContentView: View {
     }
     .scrollEdgeEffect(
       edges: [.top, .bottom],
-      length: 40,
-      padding: EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0)
+      length: 40
     )
   }
 }

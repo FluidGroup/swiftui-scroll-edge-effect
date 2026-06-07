@@ -24,8 +24,7 @@ private struct ScrollEdgeEffectListPreview: View {
     }
     .scrollEdgeEffect(
       edges: [.top, .bottom],
-      length: 48,
-      padding: EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+      length: 48
     )
   }
 }

@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// Use this view directly with `.mask { ... }` when you need to control the
 /// scroll geometry state yourself. For the common case, prefer
-/// `View.scrollEdgeEffect(edges:length:padding:threshold:animation:)`.
+/// `View.scrollEdgeEffect(edges:length:threshold:animation:)`.
 public struct ScrollEdgeEffect: View {
 
   /// The visible fade state for each edge of a `ScrollEdgeEffect`.
@@ -63,7 +63,6 @@ public struct ScrollEdgeEffect: View {
 
   private let edges: Edge.Set
   private let length: CGFloat
-  private let padding: EdgeInsets
   private let visibility: Visibility
 
   /// Creates an edge fade mask for a scrollable view.
@@ -71,24 +70,19 @@ public struct ScrollEdgeEffect: View {
   /// - Parameters:
   ///   - edges: The edges where fade ramps can appear.
   ///   - length: The length of each fade ramp.
-  ///   - padding: Fully visible insets before the fade ramps begin.
   ///   - visibility: The current visibility state for each edge fade.
   public init(
     edges: Edge.Set = [.top, .bottom],
     length: CGFloat = 40,
-    padding: EdgeInsets = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0),
     visibility: Visibility = .hidden
   ) {
     self.edges = edges
     self.length = length
-    self.padding = padding
     self.visibility = visibility
   }
 
   public var body: some View {
     VStack(spacing: 0) {
-      visiblePadding(length: padding.top, edge: .top)
-
       if edges.contains(.top) {
         fadingEdge(shows: visibility.showsTop) {
           edgeGradient(for: .top)
@@ -97,8 +91,6 @@ public struct ScrollEdgeEffect: View {
       }
 
       HStack(spacing: 0) {
-        visiblePadding(length: padding.leading, edge: .leading)
-
         if edges.contains(.leading) {
           fadingEdge(shows: visibility.showsLeading) {
             edgeGradient(for: .leading)
@@ -114,8 +106,6 @@ public struct ScrollEdgeEffect: View {
           }
           .frame(width: fadeLength)
         }
-
-        visiblePadding(length: padding.trailing, edge: .trailing)
       }
 
       if edges.contains(.bottom) {
@@ -124,27 +114,11 @@ public struct ScrollEdgeEffect: View {
         }
         .frame(height: fadeLength)
       }
-
-      visiblePadding(length: padding.bottom, edge: .bottom)
     }
   }
 
   private var fadeLength: CGFloat {
     max(length, 0)
-  }
-
-  @ViewBuilder
-  private func visiblePadding(length: CGFloat, edge: Edge) -> some View {
-    if length > 0 {
-      switch edge {
-      case .top, .bottom:
-        Rectangle()
-          .frame(height: length)
-      case .leading, .trailing:
-        Rectangle()
-          .frame(width: length)
-      }
-    }
   }
 
   private func edgeGradient(for edge: Edge) -> LinearGradient {
@@ -227,7 +201,6 @@ public extension View {
   func scrollEdgeEffect(
     edges: Edge.Set = [.top, .bottom],
     length: CGFloat = 40,
-    padding: EdgeInsets = EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0),
     threshold: CGFloat = 1,
     animation: Animation? = .spring
   ) -> some View {
@@ -235,7 +208,6 @@ public extension View {
       ScrollEdgeEffectModifier(
         edges: edges,
         length: length,
-        padding: padding,
         threshold: threshold,
         animation: animation
       )
@@ -247,7 +219,6 @@ private struct ScrollEdgeEffectModifier: ViewModifier {
 
   let edges: Edge.Set
   let length: CGFloat
-  let padding: EdgeInsets
   let threshold: CGFloat
   let animation: Animation?
 
@@ -268,7 +239,6 @@ private struct ScrollEdgeEffectModifier: ViewModifier {
         ScrollEdgeEffect(
           edges: edges,
           length: length,
-          padding: padding,
           visibility: visibility
         )
         .animation(animation, value: visibility)
