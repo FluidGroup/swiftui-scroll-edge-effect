@@ -3,6 +3,7 @@ import Testing
 @testable import ScrollEdgeEffect
 
 @Test
+@available(iOS 18.0, macOS 15.0, *)
 func visibilityShowsScrollableEdgesWhenVisibleRectIsInsideContent() {
   let visibility = ScrollEdgeEffect.Visibility(
     scrollGeometry: ScrollGeometry(
@@ -21,6 +22,7 @@ func visibilityShowsScrollableEdgesWhenVisibleRectIsInsideContent() {
 }
 
 @Test
+@available(iOS 18.0, macOS 15.0, *)
 func visibilityHidesEdgesWhenVisibleRectTouchesContentBounds() {
   let visibility = ScrollEdgeEffect.Visibility(
     scrollGeometry: ScrollGeometry(
@@ -35,5 +37,20 @@ func visibilityHidesEdgesWhenVisibleRectTouchesContentBounds() {
   #expect(!visibility.showsTop)
   #expect(!visibility.showsBottom)
   #expect(!visibility.showsLeading)
+  #expect(!visibility.showsTrailing)
+}
+
+@Test
+func visibilityCanBeCreatedFromExplicitEdgeFlagsOnIOS17() {
+  let visibility = ScrollEdgeEffect.Visibility(
+    showsTop: true,
+    showsBottom: false,
+    showsLeading: true,
+    showsTrailing: false
+  )
+
+  #expect(visibility.showsTop)
+  #expect(!visibility.showsBottom)
+  #expect(visibility.showsLeading)
   #expect(!visibility.showsTrailing)
 }

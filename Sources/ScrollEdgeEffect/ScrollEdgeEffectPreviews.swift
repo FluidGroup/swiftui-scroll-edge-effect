@@ -1,6 +1,7 @@
 import SwiftUI
 
 #if DEBUG
+@available(iOS 18.0, macOS 15.0, *)
 private struct ScrollEdgeEffectListPreview: View {
 
   var body: some View {
@@ -36,7 +37,7 @@ private struct ScrollEdgeEffectScrollViewPreview: View {
   ]
 
   var body: some View {
-    ScrollView {
+    ScrollEdgeEffectScrollView(edges: [.top, .bottom], length: 48) {
       LazyVGrid(columns: columns, spacing: 12) {
         ForEach(0..<80, id: \.self) { index in
           RoundedRectangle(cornerRadius: 8)
@@ -51,18 +52,18 @@ private struct ScrollEdgeEffectScrollViewPreview: View {
       }
       .padding(16)
     }
-    .scrollEdgeEffect(
-      edges: [.top, .bottom],
-      length: 48
-    )
   }
 }
 
 #Preview("List") {
-  ScrollEdgeEffectListPreview()
+  if #available(iOS 18.0, macOS 15.0, *) {
+    ScrollEdgeEffectListPreview()
+  } else {
+    EmptyView()
+  }
 }
 
-#Preview("ScrollView") {
+#Preview("ScrollView Wrapper") {
   ScrollEdgeEffectScrollViewPreview()
 }
 #endif

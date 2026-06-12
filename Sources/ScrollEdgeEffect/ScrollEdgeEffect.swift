@@ -1,10 +1,12 @@
+import GaussianLinearGradient
 import SwiftUI
 
 /// A mask that fades scrollable content at selected edges.
 ///
 /// Use this view directly with `.mask { ... }` when you need to control the
-/// scroll geometry state yourself. For the common case, prefer
-/// `View.scrollEdgeEffect(edges:length:threshold:animation:)`.
+/// scroll geometry state yourself. On iOS 17, use `ScrollEdgeEffectScrollView`
+/// when you can wrap the scroll view. On iOS 18 and later, prefer
+/// `View.scrollEdgeEffect(edges:length:threshold:animation:)` for existing scroll views.
 public struct ScrollEdgeEffect: View {
 
   /// The visible fade state for each edge of a `ScrollEdgeEffect`.
@@ -43,6 +45,7 @@ public struct ScrollEdgeEffect: View {
     ///   - geometry: The current scroll geometry from `onScrollGeometryChange`.
     ///   - edges: The edges whose visibility should be evaluated.
     ///   - threshold: The distance from an edge that still counts as being at that edge.
+    @available(iOS 18.0, macOS 15.0, *)
     public init(
       scrollGeometry geometry: ScrollGeometry,
       edges: Edge.Set = [.top, .bottom],
@@ -121,7 +124,7 @@ public struct ScrollEdgeEffect: View {
     max(length, 0)
   }
 
-  private func edgeGradient(for edge: Edge) -> LinearGradient {
+  private func edgeGradient(for edge: Edge) -> GaussianLinearGradient {
     switch edge {
     case .top:
       fadingGradient(
@@ -150,31 +153,15 @@ public struct ScrollEdgeEffect: View {
     }
   }
 
-  /// Creates the edge mask ramp, including a short intermediate stop that softens the fade.
+  /// Creates the edge mask ramp using a one-dimensional Gaussian-like falloff.
   private func fadingGradient(
     transparentAtStart: Bool,
     startPoint: UnitPoint,
     endPoint: UnitPoint
-  ) -> LinearGradient {
-    let rampLocation = fadeLength > 0 ? min(max(5 / fadeLength, 0), 1) : 1
-    let stops: [Gradient.Stop]
-
-    if transparentAtStart {
-      stops = [
-        Gradient.Stop(color: .clear, location: 0),
-        Gradient.Stop(color: .black.opacity(0.4), location: rampLocation),
-        Gradient.Stop(color: .black, location: 1),
-      ]
-    } else {
-      stops = [
-        Gradient.Stop(color: .black, location: 0),
-        Gradient.Stop(color: .black.opacity(0.4), location: 1 - rampLocation),
-        Gradient.Stop(color: .clear, location: 1),
-      ]
-    }
-
-    return LinearGradient(
-      stops: stops,
+  ) -> GaussianLinearGradient {
+    GaussianLinearGradient(
+      color: .black,
+      transparentAtStart: transparentAtStart,
       startPoint: startPoint,
       endPoint: endPoint
     )
@@ -195,9 +182,14 @@ public extension View {
 
   /// Applies a scroll edge fade mask to the first scrollable view in this view hierarchy.
   ///
+  /// This modifier relies on SwiftUI scroll geometry observation and is available on
+  /// iOS 18 and later. For iOS 17, use `ScrollEdgeEffectScrollView` when you own the
+  /// `ScrollView` creation.
+  ///
   /// Apply this modifier directly to `ScrollView`, `List`, or another SwiftUI view that
   /// owns a scroll view. The modifier observes the scroll geometry and updates the mask
   /// when the content moves away from or reaches the selected edges.
+  @available(iOS 18.0, macOS 15.0, *)
   func scrollEdgeEffect(
     edges: Edge.Set = [.top, .bottom],
     length: CGFloat = 40,
@@ -215,6 +207,7 @@ public extension View {
   }
 }
 
+@available(iOS 18.0, macOS 15.0, *)
 private struct ScrollEdgeEffectModifier: ViewModifier {
 
   let edges: Edge.Set
