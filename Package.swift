@@ -17,7 +17,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/FluidGroup/swiftui-gaussian-linear-gradient",
-      exact: "0.1.1"
+      exact: "0.2.0"
     ),
   ],
   targets: [
