@@ -128,25 +128,29 @@ public struct ScrollEdgeEffect: View {
     switch edge {
     case .top:
       fadingGradient(
-        transparentAtStart: true,
+        startColor: .clear,
+        endColor: .black,
         startPoint: .top,
         endPoint: .bottom
       )
     case .leading:
       fadingGradient(
-        transparentAtStart: true,
+        startColor: .clear,
+        endColor: .black,
         startPoint: .leading,
         endPoint: .trailing
       )
     case .bottom:
       fadingGradient(
-        transparentAtStart: false,
+        startColor: .black,
+        endColor: .clear,
         startPoint: .top,
         endPoint: .bottom
       )
     case .trailing:
       fadingGradient(
-        transparentAtStart: false,
+        startColor: .black,
+        endColor: .clear,
         startPoint: .leading,
         endPoint: .trailing
       )
@@ -155,13 +159,14 @@ public struct ScrollEdgeEffect: View {
 
   /// Creates the edge mask ramp using a one-dimensional Gaussian-like falloff.
   private func fadingGradient(
-    transparentAtStart: Bool,
+    startColor: Color,
+    endColor: Color,
     startPoint: UnitPoint,
     endPoint: UnitPoint
   ) -> GaussianLinearGradient {
     GaussianLinearGradient(
-      color: .black,
-      transparentAtStart: transparentAtStart,
+      startColor: startColor,
+      endColor: endColor,
       startPoint: startPoint,
       endPoint: endPoint
     )
